@@ -5,7 +5,9 @@ defmodule TaskApiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", TaskApiWeb do
+  scope "/api/v1", TaskApiWeb do
     pipe_through :api
+
+    resources "/users", UserController #, only: [:create, :show]
   end
 end
