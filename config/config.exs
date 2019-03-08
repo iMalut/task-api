@@ -28,3 +28,7 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
+
+config :task_api, TaskApi.Guardian,
+       issuer: "task_api",
+       secret_key: "GVT6b/JyP/ro6uVqCbWUVZse3ePlziWIkWV3avv5e0fztwkLjz7MT2bBm/SHg6eF"

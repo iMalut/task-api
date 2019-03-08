@@ -15,4 +15,9 @@ defmodule TaskApiWeb.UserView do
       email: user.email,
       is_admin: user.is_admin}
   end
+
+  def render("jwt.json", %{jwt: jwt}) do
+    %{jwt: jwt}
+  end
+
 end

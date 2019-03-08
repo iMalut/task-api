@@ -4,6 +4,8 @@ defmodule TaskApiWeb.UserController do
   alias TaskApi.Accounts
   alias TaskApi.Accounts.User
 
+  alias TaskApi.Guardian
+
   action_fallback TaskApiWeb.FallbackController
 
   def index(conn, _params) do
@@ -12,17 +14,15 @@ defmodule TaskApiWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.user_path(conn, :show, user))
-      |> render("show.json", user: user)
+    with {:ok, %User{} = user} <- Accounts.create_user(user_params),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
+      conn |> render("jwt.json", jwt: token)
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    render(conn, "show.json", user: user)
+  def show(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+    conn |> render("user.json", user: user)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
